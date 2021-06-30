@@ -1,18 +1,15 @@
-import 'package:project_1/models/user.dart';
+import '../models/login.dart';
+
+import '../models/user.dart';
 
 class UserController {
   User currentUser;
 
+  User signIn(String email, String password) {
+    return currentUser = Login().signIn(email, password);
+  }
 
-  User signIn(String email, String password){
-
-    if(email.isNotEmpty && password.isNotEmpty){
-      currentUser = 
-        mockUsers.firstWhere((user) => user.email == email && user.password == password);
-
-      return currentUser;
-    }
-
-    return null;
+  void signOut() {
+    currentUser = null;
   }
 }

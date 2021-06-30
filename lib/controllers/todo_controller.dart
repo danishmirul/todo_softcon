@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:project_1/models/user.dart';
+import '../models/todo.dart';
+import '../models/user.dart';
 
 class TodoController {
-  Color getColorType(String param) {
-    switch (param) {
+  Color getColorType(Todo param) {
+    switch (param.type) {
       case 'TASK':
         return Colors.indigo;
         break;
       case 'REMAINDER':
-        return Colors.amber;
+        if (param.duedate.millisecond >= DateTime.now().millisecond)
+          return Colors.orange;
+        return Colors.green;
         break;
       case 'NOTE':
-        return Colors.yellow;
+        return Colors.lime;
         break;
       default:
         return Colors.red;

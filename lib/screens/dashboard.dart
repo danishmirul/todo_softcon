@@ -1,100 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:project_1/controllers/todo_controller.dart';
-import 'package:project_1/models/todo.dart';
+import 'package:intl/intl.dart';
+import '../constants.dart';
+import '../controllers/user_controller.dart';
+import '../models/user.dart';
+import '../controllers/todo_controller.dart';
+import '../models/todo.dart';
 
-class Dashboard extends StatefulWidget {
-  const Dashboard({ Key key }) : super(key: key);
+class Dashboard extends StatelessWidget {
+  final List _data;
 
-  @override
-  _DashboardState createState() => _DashboardState();
-}
-
-class _DashboardState extends State<Dashboard> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: (context, index){ return mockTodos.map((todo) =>_buildItem(todo)).toList();});
-  }
-
-  Widget _buildItem(Todo todo){
-    return CustomListItem(thumbnail: Container(
-            decoration: BoxDecoration(color: TodoController().getColorType(todo.type)),
-          ),);
-  }
-}
-
-class CustomListItem extends StatelessWidget {
-  const CustomListItem({
-    Key key,
-    this.thumbnail,
-    this.title,
-    this.description,
-  }) : super(key: key);
-
-  final Widget thumbnail;
-  final String title;
-  final String description;
+  Dashboard(this._data);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: thumbnail,
+    return Scaffold(
+      appBar: AppBar(
+        leading: Container(),
+        title: Text(
+          'TODO SOFTCON',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'OpenSans',
+            fontSize: 22,
           ),
-          Expanded(
-            flex: 3,
-            child: ItemDescription(
-              title: title,
-              description: description,
-            ),
-          ),
-          const Icon(
-            Icons.more_vert,
-            size: 16.0,
-          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              UserController().signOut();
+              Navigator.pushReplacementNamed(context, homeRoute);
+            },
+          )
         ],
+        centerTitle: true,
+      ),
+      body: ListView.separated(
+        itemCount: _data.length,
+        itemBuilder: (context, index) => _ListTile(
+          index: index,
+          todos: _data,
+        ),
+        separatorBuilder: (context, index) => Divider(
+          color: Colors.grey,
+        ),
       ),
     );
   }
 }
 
+class _ListTile extends StatefulWidget {
+  final int index;
+  final List todos;
+  _ListTile({this.index, this.todos});
 
+  @override
+  __ListTileState createState() => __ListTileState();
+}
 
-class ItemDescription extends StatelessWidget {
-  const ItemDescription({
-    Key key,
-    this.title,
-    this.description,
-  }) : super(key: key);
+class __ListTileState extends State<_ListTile> {
+  void _navigate() async {
+    final result = await Navigator.pushNamed(context, detailsRoute,
+        arguments: Todo.copy(widget.todos[widget.index]));
 
-  final String title;
-  final String description;
+    if (result != null) {
+      setState(() => widget.todos[widget.index] = result);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14.0,
-            ),
-          ),
-          const Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
-          Text(
-            description,
-            style: const TextStyle(fontSize: 10.0),
-          ),
-        ],
-      ),
+    return ListTile(
+      title: Text(widget.todos[widget.index].title),
+      tileColor: TodoController().getColorType(widget.todos[widget.index]),
+      subtitle: Text(widget.todos[widget.index].description),
+      onTap: () => _navigate(),
     );
   }
 }

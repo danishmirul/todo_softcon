@@ -6,5 +6,6 @@ class User {
 }
 
 List mockUsers = [
+  User(email: 'test@gmail.com', password: 'abcd1234'),
   User(email: 'boukendabouken@genshin.mihoyo.com', password: 'fischl4lyfe'),
 ];
