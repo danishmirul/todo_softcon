@@ -1,12 +1,10 @@
-import '../models/login.dart';
-
 import '../models/user.dart';
 
 class UserController {
   User currentUser;
 
   User signIn(String email, String password) {
-    return currentUser = Login().signIn(email, password);
+    return currentUser = User().signIn(email, password);
   }
 
   void signOut() {

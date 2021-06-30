@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../constants.dart';
 import '../controllers/user_controller.dart';
-import '../models/user.dart';
+import '../models/note.dart';
+import '../models/remainder.dart';
+import '../models/task.dart';
 import '../controllers/todo_controller.dart';
 import '../models/todo.dart';
 
@@ -13,6 +14,7 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(_data);
     return Scaffold(
       appBar: AppBar(
         leading: Container(),
@@ -62,7 +64,13 @@ class _ListTile extends StatefulWidget {
 class __ListTileState extends State<_ListTile> {
   void _navigate() async {
     final result = await Navigator.pushNamed(context, detailsRoute,
-        arguments: Todo.copy(widget.todos[widget.index]));
+        arguments: widget.todos[widget.index] is Note
+            ? Note.copy(widget.todos[widget.index])
+            : (widget.todos[widget.index] is Task
+                ? Task.copy(widget.todos[widget.index])
+                : (widget.todos[widget.index] is Remainder
+                    ? Remainder.copy(widget.todos[widget.index])
+                    : Todo.copy(widget.todos[widget.index]))));
 
     if (result != null) {
       setState(() => widget.todos[widget.index] = result);

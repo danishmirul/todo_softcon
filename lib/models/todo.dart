@@ -1,54 +1,51 @@
+import 'package:flutter/material.dart';
+import '../models/note.dart';
+import '../models/remainder.dart';
+import '../models/task.dart';
 import '../models/task_description.dart';
 
 class Todo {
   String title;
   String description;
-  String type;
-  String note;
-  List<TaskDescription> tasks;
-  DateTime duedate;
 
-  Todo(
-      {this.title,
-      this.description,
-      this.type,
-      this.note,
-      this.tasks,
-      this.duedate});
+  Todo({this.title, this.description});
 
-  Todo.copy(Todo from)
-      : this(
-            title: from.title,
-            description: from.description,
-            type: from.type,
-            note: from.note,
-            tasks: from.tasks,
-            duedate: from.duedate);
+  Todo.copy(Todo from) : this(title: from.title, description: from.description);
 
   @override
   String toString() =>
-      "{\n \ttitle: $title,\n \tdescription: $description,\n \ttype: $type,\n \tnote: $note,\n \tduedate:$duedate\n}  ";
+      "{\n \ttitle: $title,\n \tdescription: $description,\n}  ";
+
+  Color getColorType(Todo param) {
+    if (param is Note) {
+      return Colors.lime;
+    } else if (param is Task) {
+      return Colors.indigo;
+    } else if (param is Remainder) {
+      if (param.dueDate.millisecond >= DateTime.now().millisecond)
+        return Colors.orange;
+      return Colors.green;
+    } else
+      return Colors.white;
+  }
 }
 
 List mockTodos = [
-  Todo(
+  Note(
     title: 'Vagabond Event',
     description: 'Points target',
-    note: '5k points every challenge',
-    type: 'NOTE',
+    notes: '5k points every challenge',
   ),
-  Todo(
+  Task(
     title: 'Belom Anjir Event',
     description: 'kerja apakah',
-    type: 'TASK',
     tasks: [
       TaskDescription('Awek', 'Jumpa Awek', false),
     ],
   ),
-  Todo(
+  Remainder(
     title: 'Due Date',
     description: 'Ending',
-    type: 'REMAINDER',
-    duedate: DateTime.now(),
+    dueDate: DateTime.now(),
   ),
 ];

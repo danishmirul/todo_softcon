@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/todo.dart';
+import '../models/note.dart';
+import '../models/remainder.dart';
+import '../models/task.dart';
 
 class DetailsScreen extends StatefulWidget {
-  final Todo _data;
+  final _data;
   DetailsScreen(this._data, {Key key}) : super(key: key);
 
   @override
@@ -10,11 +12,12 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  Todo _data;
+  var _data;
   _DetailsScreenState(this._data);
 
   @override
   Widget build(BuildContext context) {
+    print(_data);
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Scaffold(
@@ -23,11 +26,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
           title: Text(_data.title),
           centerTitle: true,
         ),
-        body: _data.type == 'NOTE'
+        body: _data is Note
             ? _buildNote()
-            : _data.type == 'TASK'
+            : _data is Task
                 ? _buildTask()
-                : _buildRemainder(),
+                : _data is Remainder
+                    ? _buildRemainder()
+                    : Container(),
         floatingActionButton: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
@@ -71,7 +76,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               child: TextFormField(
                 key: new Key('description'),
                 validator: (value) => value.isEmpty ? 'Cannot be empty' : null,
-                onChanged: (value) => _data.note = value.trim(),
+                onChanged: (value) => _data.description = value.trim(),
                 initialValue: _data.description,
                 autocorrect: false,
                 decoration: InputDecoration(
@@ -84,8 +89,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
               child: TextFormField(
                 key: new Key('note'),
                 validator: (value) => value.isEmpty ? 'Cannot be empty' : null,
-                onChanged: (value) => _data.note = value.trim(),
-                initialValue: _data.note,
+                onChanged: (value) => _data.notes = value.trim(),
+                initialValue: _data.notes,
                 autocorrect: false,
                 maxLines: 10,
                 decoration: InputDecoration(
@@ -119,7 +124,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               child: TextFormField(
                 key: new Key('description'),
                 validator: (value) => value.isEmpty ? 'Cannot be empty' : null,
-                onChanged: (value) => _data.note = value.trim(),
+                onChanged: (value) => _data.description = value.trim(),
                 initialValue: _data.description,
                 autocorrect: false,
                 decoration: InputDecoration(
@@ -130,7 +135,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 60,
               child: InputDatePickerFormField(
-                initialDate: _data.duedate,
+                initialDate: _data.dueDate,
                 firstDate: DateTime.now(),
                 lastDate: DateTime(DateTime.now().year + 1,
                     DateTime.now().month, DateTime.now().day),
@@ -162,7 +167,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               child: TextFormField(
                 key: new Key('description'),
                 validator: (value) => value.isEmpty ? 'Cannot be empty' : null,
-                onChanged: (value) => _data.note = value.trim(),
+                onChanged: (value) => _data.description = value.trim(),
                 initialValue: _data.description,
                 autocorrect: false,
                 decoration: InputDecoration(
